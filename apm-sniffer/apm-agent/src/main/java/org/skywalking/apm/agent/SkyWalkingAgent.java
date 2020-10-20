@@ -54,10 +54,13 @@ public class SkyWalkingAgent {
     public static void premain(String agentArgs, Instrumentation instrumentation) throws PluginException {
         final PluginFinder pluginFinder;
         try {
+            // 初始化 Agent 配置
             SnifferConfigInitializer.initialize();
 
+            // 加载 Agent 插件，然后创建 PluginFinder
             pluginFinder = new PluginFinder(new PluginBootstrap().loadPlugins());
 
+            // 初始化 Agent 服务管理，在这个过程中 Agent 服务们会被初始化
             ServiceManager.INSTANCE.boot();
         } catch (Exception e) {
             logger.error(e, "Skywalking agent initialized failure. Shutting down.");
@@ -70,6 +73,7 @@ public class SkyWalkingAgent {
             }
         }, "skywalking service shutdown thread"));
 
+        // 基于 byte-buddy, 初始化 Instrumentation 的 ClassFileTransformer
         new AgentBuilder.Default().type(pluginFinder.buildMatch()).transform(new AgentBuilder.Transformer() {
             @Override
             public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription,

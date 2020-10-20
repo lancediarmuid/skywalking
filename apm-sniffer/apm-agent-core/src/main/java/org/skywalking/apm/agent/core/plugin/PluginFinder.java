@@ -43,6 +43,7 @@ public class PluginFinder {
     private final Map<String, LinkedList<AbstractClassEnhancePluginDefine>> nameMatchDefine = new HashMap<String, LinkedList<AbstractClassEnhancePluginDefine>>();
     private final List<AbstractClassEnhancePluginDefine> signatureMatchDefine = new LinkedList<AbstractClassEnhancePluginDefine>();
 
+    // 循环 AbstractClassEnhancePluginDefine 对象数组，添加到 nameMatchDefine/signatureMatchDefine 属性，方便 find()方法查找 AbstractClassEnhancePluginDefine 对象
     public PluginFinder(List<AbstractClassEnhancePluginDefine> plugins) {
         for (AbstractClassEnhancePluginDefine plugin : plugins) {
             ClassMatch match = plugin.enhanceClass();
@@ -50,7 +51,7 @@ public class PluginFinder {
             if (match == null) {
                 continue;
             }
-
+            // 处理 NameMatch 为匹配的 AbstractClassEnhancePluginDefine 对象，添加到 nameMatchDefine 属性。
             if (match instanceof NameMatch) {
                 NameMatch nameMatch = (NameMatch)match;
                 LinkedList<AbstractClassEnhancePluginDefine> pluginDefines = nameMatchDefine.get(nameMatch.getClassName());
@@ -60,11 +61,13 @@ public class PluginFinder {
                 }
                 pluginDefines.add(plugin);
             } else {
+                // 处理非 NameMatch 为匹配的 AbstractClassEnhancePluginDefine 对象，添加到 signatureMatchDefine 属性。
                 signatureMatchDefine.add(plugin);
             }
         }
     }
 
+    // 获得类增强插件定义（AbstractClassEnhancePluginDefine）对象
     public List<AbstractClassEnhancePluginDefine> find(TypeDescription typeDescription,
         ClassLoader classLoader) {
         List<AbstractClassEnhancePluginDefine> matchedPlugins = new LinkedList<AbstractClassEnhancePluginDefine>();

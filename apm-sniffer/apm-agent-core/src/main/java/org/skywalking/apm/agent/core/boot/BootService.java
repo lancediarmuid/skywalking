@@ -25,6 +25,7 @@ package org.skywalking.apm.agent.core.boot;
  *
  * @author wusheng
  */
+// Agent 启动服务接口，定义了 beforeBoot()/boot()/afterBoot()/shutdown()接口方法
 public interface BootService {
     void beforeBoot() throws Throwable;
 

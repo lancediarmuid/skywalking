@@ -42,8 +42,11 @@ public class PluginBootstrap {
      * @return plugin definition list.
      */
     public List<AbstractClassEnhancePluginDefine> loadPlugins() throws AgentPackageNotFoundException {
+
+        // 初始化 AgentClassLoader
         AgentClassLoader.initDefaultLoader();
 
+        // 获得插件定义路径数组
         PluginResourcesResolver resolver = new PluginResourcesResolver();
         List<URL> resources = resolver.getResources();
 
@@ -52,6 +55,7 @@ public class PluginBootstrap {
             return new ArrayList<AbstractClassEnhancePluginDefine>();
         }
 
+        // 获得插件定义（PluginDefine）数组
         for (URL pluginUrl : resources) {
             try {
                 PluginCfg.INSTANCE.load(pluginUrl.openStream());
@@ -59,9 +63,9 @@ public class PluginBootstrap {
                 logger.error(t, "plugin file [{}] init failure.", pluginUrl);
             }
         }
-
         List<PluginDefine> pluginClassList = PluginCfg.INSTANCE.getPluginClassList();
 
+        // 创建类增强插件定义（AbstractClassEnhancePluginDefine）对象数组
         List<AbstractClassEnhancePluginDefine> plugins = new ArrayList<AbstractClassEnhancePluginDefine>();
         for (PluginDefine pluginDefine : pluginClassList) {
             try {

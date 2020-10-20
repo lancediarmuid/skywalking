@@ -37,11 +37,16 @@ public enum ServiceManager {
     private static final ILog logger = LogManager.getLogger(ServiceManager.class);
     private Map<Class, BootService> bootedServices = new HashMap<Class, BootService>();
 
+    //ServiceManager 基于 SPI (Service Provider Interface) 机制，在 /resources/META-INF.services/org.skywalking.apm.agent.core.boot.BootService 文件里，定义了所有 BootService 的实现类。
     public void boot() {
+        // 加载所有 BootService 实现类的实例数组。
         bootedServices = loadAllServices();
 
+        // 调用所有 BootService 实例类的beforeBoot() 方法
         beforeBoot();
+        // 调用所有 BootService 实例类的boot() 方法
         startup();
+        // 调用所有 BootService 实例类的 afterBoot() 方法
         afterBoot();
     }
 
